@@ -73,7 +73,7 @@ format:
 
 # Internal hidden targets that are used only in docker environment
 --in-docker-start-debug --in-docker-start-release: --in-docker-start-%: install-%
-	psql 'postgresql://user:password@service-postgres:5432/auth_service_db-1' -f ./postgresql/data/initial_data.sql
+	psql 'postgresql://user:password@service-postgres:5432/auth_service_db_1' -f ./postgresql/data/initial_data.sql
 	/home/user/.local/bin/auth_service \
 		--config /home/user/.local/etc/auth_service/static_config.yaml \
 		--config_vars /home/user/.local/etc/auth_service/config_vars.docker.yaml
