@@ -1,6 +1,17 @@
 version: "2.3"
 
 services:
+    redis:
+      container_name: service-redis
+      image: redis:bookworm
+      ports:
+        - 6379
+      command: redis-server --save 60 1 --loglevel warning --requirepass password
+      volumes:
+        - ./.rdata:/data
+      networks:
+        - redis
+
     postgres:
         container_name: service-postgres
         image: postgres:12
@@ -46,9 +57,13 @@ services:
           - /tools/run_as_user.sh
         depends_on:
           - postgres
+          - redis
         networks:
           - postgres
+          - redis
 
 networks:
     postgres:
+        driver: bridge
+    redis:
         driver: bridge
