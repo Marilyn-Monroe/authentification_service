@@ -14,8 +14,8 @@ void HelloBenchmark(benchmark::State& state) {
 
     for (auto _ : state) {
       const auto name = kNames[i++ % std::size(kNames)];
-      auto result = auth_service::SayHelloTo(
-          name, auth_service::UserType::kFirstTime);
+      auto result =
+          auth_service::SayHelloTo(name, auth_service::UserType::kFirstTime);
       benchmark::DoNotOptimize(result);
     }
   });

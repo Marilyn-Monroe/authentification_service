@@ -9,11 +9,11 @@ namespace auth_service {
 
 namespace {
 
-class SignUp final : public userver::server::handlers::HttpHandlerJsonBase {
+class SignIn final : public userver::server::handlers::HttpHandlerJsonBase {
  public:
-  static constexpr std::string_view kName = "handler-signup";
+  static constexpr std::string_view kName = "handler-signin";
 
-  SignUp(const userver::components::ComponentConfig& config,
+  SignIn(const userver::components::ComponentConfig& config,
          const userver::components::ComponentContext& component_context);
 
   userver::formats::json::Value HandleRequestJsonThrow(
@@ -27,6 +27,6 @@ class SignUp final : public userver::server::handlers::HttpHandlerJsonBase {
 
 }  // namespace
 
-void AppendSignUp(userver::components::ComponentList& component_list);
+void AppendSignIn(userver::components::ComponentList& component_list);
 
 }  // namespace auth_service

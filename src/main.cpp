@@ -9,19 +9,22 @@
 #include <userver/storages/postgres/component.hpp>
 
 #include "hello.hpp"
+#include "signin.hpp"
 #include "signup.hpp"
 
 int main(int argc, char* argv[]) {
-  auto component_list = userver::components::MinimalServerComponentList()
-                            .Append<userver::server::handlers::Ping>()
-                            .Append<userver::components::TestsuiteSupport>()
-                            .Append<userver::components::HttpClient>()
-                            .Append<userver::server::handlers::TestsControl>()
-                            .Append<userver::clients::dns::Component>()
-                            .Append<userver::components::Postgres>("postgres-db-1");
+  auto component_list =
+      userver::components::MinimalServerComponentList()
+          .Append<userver::server::handlers::Ping>()
+          .Append<userver::components::TestsuiteSupport>()
+          .Append<userver::components::HttpClient>()
+          .Append<userver::server::handlers::TestsControl>()
+          .Append<userver::clients::dns::Component>()
+          .Append<userver::components::Postgres>("postgres-db-1");
 
   auth_service::AppendHello(component_list);
   auth_service::AppendSignUp(component_list);
+  auth_service::AppendSignIn(component_list);
 
   return userver::utils::DaemonMain(argc, argv, component_list);
 }

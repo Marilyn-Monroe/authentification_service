@@ -1,7 +1,7 @@
 #include "signup.hpp"
+#include "utils.hpp"
 
 #include <fmt/format.h>
-#include <openssl/evp.h>
 
 #include <userver/components/component.hpp>
 #include <userver/storages/postgres/component.hpp>
@@ -23,23 +23,6 @@ userver::formats::json::Value SignUp::HandleRequestJsonThrow(
     const userver::server::http::HttpRequest& request,
     const userver::formats::json::Value& json,
     userver::server::request::RequestContext&) const {
-  if (!json.HasMember("email")) {
-    throw userver::server::handlers::ClientError(
-        userver::server::handlers::ExternalBody{"No 'email' argument"});
-  }
-
-  if (!json["email"].IsString()) {
-    throw userver::server::handlers::ClientError(
-        userver::server::handlers::ExternalBody{
-            "Invalid 'email' argument type"});
-  }
-
-  const auto& email = json["email"].As<std::string>();
-  if (email.length() < 6 || email.length() > 256) {
-    throw userver::server::handlers::ClientError(
-        userver::server::handlers::ExternalBody{"Wrong 'email' argument"});
-  }
-
   if (!json.HasMember("username")) {
     throw userver::server::handlers::ClientError(
         userver::server::handlers::ExternalBody{"No 'username' argument"});
@@ -55,6 +38,23 @@ userver::formats::json::Value SignUp::HandleRequestJsonThrow(
   if (username.length() < 6 || username.length() > 32) {
     throw userver::server::handlers::ClientError(
         userver::server::handlers::ExternalBody{"Wrong 'username' argument"});
+  }
+
+  if (!json.HasMember("email")) {
+    throw userver::server::handlers::ClientError(
+        userver::server::handlers::ExternalBody{"No 'email' argument"});
+  }
+
+  if (!json["email"].IsString()) {
+    throw userver::server::handlers::ClientError(
+        userver::server::handlers::ExternalBody{
+            "Invalid 'email' argument type"});
+  }
+
+  const auto& email = json["email"].As<std::string>();
+  if (email.length() < 6 || email.length() > 256) {
+    throw userver::server::handlers::ClientError(
+        userver::server::handlers::ExternalBody{"Wrong 'email' argument"});
   }
 
   if (!json.HasMember("password")) {
@@ -77,8 +77,8 @@ userver::formats::json::Value SignUp::HandleRequestJsonThrow(
   auto selectResult =
       pg_cluster_->Execute(userver::storages::postgres::ClusterHostType::kSlave,
                            "SELECT 1 FROM accounts "
-                           "WHERE email = $1 OR username = $2",
-                           email, username);
+                           "WHERE username = $1 OR email = $2",
+                           username, email);
 
   if (!selectResult.IsEmpty()) {
     throw userver::server::handlers::ClientError(
@@ -90,10 +90,10 @@ userver::formats::json::Value SignUp::HandleRequestJsonThrow(
 
   auto insertResult = pg_cluster_->Execute(
       userver::storages::postgres::ClusterHostType::kMaster,
-      "INSERT INTO accounts(email, username, pass_salt, pass_hash) "
+      "INSERT INTO accounts(username, email, pass_salt, pass_hash) "
       "VALUES($1, $2, $3, $4) "
       "RETURNING accounts.id",
-      email, username, salt, hash);
+      username, email, salt, hash);
 
   userver::formats::json::ValueBuilder response(
       userver::formats::common::Type::kObject);
@@ -104,24 +104,6 @@ userver::formats::json::Value SignUp::HandleRequestJsonThrow(
 }
 
 }  // namespace
-
-std::string PBKDF2_HMAC_SHA_512(const std::string password,
-                                const std::string salt) {
-  const int kIterations = 16384;
-  const int kOutputBytes = 64;
-  unsigned char digest[kOutputBytes];
-  PKCS5_PBKDF2_HMAC(password.c_str(), password.length(),
-                    reinterpret_cast<const unsigned char*>(salt.c_str()),
-                    salt.length(), kIterations, EVP_sha512(), kOutputBytes,
-                    digest);
-
-  std::string result;
-  for (size_t i = 0; i < sizeof(digest); i++) {
-    result.append(fmt::format("{:02x}", 255 & digest[i]));
-  }
-
-  return result;
-}
 
 void AppendSignUp(userver::components::ComponentList& component_list) {
   component_list.Append<SignUp>();

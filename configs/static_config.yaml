@@ -59,7 +59,11 @@ components_manager:
             path: /v1/signup
             method: POST
             task_processor: main-task-processor
-            parse_args_from_body: true
+
+        handler-signin:
+            path: /v1/signin
+            method: POST
+            task_processor: main-task-processor
 
         postgres-db-1:
             dbconnection: $dbconnection
