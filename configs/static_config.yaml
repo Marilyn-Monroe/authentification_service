@@ -55,6 +55,12 @@ components_manager:
             method: POST                  # It will only reply to POST requests.
             task_processor: main-task-processor  # Run it on CPU bound task processor
 
+        handler-signup:
+            path: /v1/signup
+            method: POST
+            task_processor: main-task-processor
+            parse_args_from_body: true
+
         postgres-db-1:
             dbconnection: $dbconnection
             blocking_task_processor: fs-task-processor

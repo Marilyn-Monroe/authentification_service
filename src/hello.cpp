@@ -2,7 +2,6 @@
 
 #include <fmt/format.h>
 
-#include <userver/clients/dns/component.hpp>
 #include <userver/components/component.hpp>
 #include <userver/server/handlers/http_handler_base.hpp>
 #include <userver/storages/postgres/cluster.hpp>
@@ -70,8 +69,6 @@ std::string SayHelloTo(std::string_view name, UserType type) {
 
 void AppendHello(userver::components::ComponentList& component_list) {
   component_list.Append<Hello>();
-  component_list.Append<userver::components::Postgres>("postgres-db-1");
-  component_list.Append<userver::clients::dns::Component>();
 }
 
 }  // namespace auth_service
