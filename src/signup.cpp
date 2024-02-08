@@ -23,56 +23,14 @@ userver::formats::json::Value SignUp::HandleRequestJsonThrow(
     const userver::server::http::HttpRequest& request,
     const userver::formats::json::Value& json,
     userver::server::request::RequestContext&) const {
-  if (!json.HasMember("username")) {
-    throw userver::server::handlers::ClientError(
-        userver::server::handlers::ExternalBody{"No 'username' argument"});
-  }
+  const auto& username = GetField<std::string>(json, "username");
+  ValidateUsername(username);
 
-  if (!json["username"].IsString()) {
-    throw userver::server::handlers::ClientError(
-        userver::server::handlers::ExternalBody{
-            "Invalid 'username' argument type"});
-  }
+  const auto& email = GetField<std::string>(json, "email");
+  ValidateEmail(email);
 
-  const auto& username = json["username"].As<std::string>();
-  if (username.length() < 6 || username.length() > 32) {
-    throw userver::server::handlers::ClientError(
-        userver::server::handlers::ExternalBody{"Wrong 'username' argument"});
-  }
-
-  if (!json.HasMember("email")) {
-    throw userver::server::handlers::ClientError(
-        userver::server::handlers::ExternalBody{"No 'email' argument"});
-  }
-
-  if (!json["email"].IsString()) {
-    throw userver::server::handlers::ClientError(
-        userver::server::handlers::ExternalBody{
-            "Invalid 'email' argument type"});
-  }
-
-  const auto& email = json["email"].As<std::string>();
-  if (email.length() < 6 || email.length() > 256) {
-    throw userver::server::handlers::ClientError(
-        userver::server::handlers::ExternalBody{"Wrong 'email' argument"});
-  }
-
-  if (!json.HasMember("password")) {
-    throw userver::server::handlers::ClientError(
-        userver::server::handlers::ExternalBody{"No 'password' argument"});
-  }
-
-  if (!json["password"].IsString()) {
-    throw userver::server::handlers::ClientError(
-        userver::server::handlers::ExternalBody{
-            "Invalid 'password' argument type"});
-  }
-
-  const auto& password = json["password"].As<std::string>();
-  if (password.length() < 8 || password.length() > 256) {
-    throw userver::server::handlers::ClientError(
-        userver::server::handlers::ExternalBody{"Wrong 'password' argument"});
-  }
+  const auto& password = GetField<std::string>(json, "password");
+  ValidatePassword(password);
 
   auto select_result =
       pg_cluster_->Execute(userver::storages::postgres::ClusterHostType::kSlave,
@@ -85,8 +43,8 @@ userver::formats::json::Value SignUp::HandleRequestJsonThrow(
         userver::server::handlers::ExternalBody{"Account already exists"});
   }
 
-  const auto salt = userver::utils::generators::GenerateUuid();
-  const auto hash = PBKDF2_HMAC_SHA_512(password, salt);
+  const auto& salt = userver::utils::generators::GenerateUuid();
+  const auto& hash = PBKDF2_HMAC_SHA_512(password, salt);
 
   auto insert_result = pg_cluster_->Execute(
       userver::storages::postgres::ClusterHostType::kMaster,
