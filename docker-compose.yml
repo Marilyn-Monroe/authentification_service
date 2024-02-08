@@ -1,69 +1,137 @@
-version: "2.3"
+version: "3.8"
 
 services:
-    redis:
-      container_name: service-redis
-      image: redis:bookworm
-      ports:
-        - 6379
-      command: redis-server --save 60 1 --loglevel warning --requirepass password
-      volumes:
-        - ./.rdata:/data
-      networks:
-        - redis
+  redis-node-1:
+    image: redis:bookworm
+    ports:
+      - 7000
+    networks:
+      - redis
+    hostname: redis-node-1
+    volumes:
+      - ./redis:/redis
+    command: redis-server /redis/redis.conf --port 7000
 
-    postgres:
-        container_name: service-postgres
-        image: postgres:12
-        environment:
-          - POSTGRES_DB=auth_service_db_1
-          - POSTGRES_USER=user
-          - POSTGRES_PASSWORD=password
-        ports:
-          - 5432
-        volumes:
-          - ./postgresql/schemas:/docker-entrypoint-initdb.d
-          - ./.pgdata:/var/lib/postgresql/data
-        networks:
-          - postgres
+  redis-node-2:
+    image: redis:bookworm
+    ports:
+      - 7001
+    networks:
+      - redis
+    hostname: redis-node-2
+    volumes:
+      - ./redis:/redis
+    command: redis-server /redis/redis.conf --port 7001
 
-    auth_service-container:
-        image: ghcr.io/userver-framework/ubuntu-userver-build-base:v1
-        privileged: true
-        environment:
-          - POSTGRES_DB=auth_service_db_1
-          - POSTGRES_USER=user
-          - POSTGRES_PASSWORD=password
-          - PREFIX=${PREFIX:-~/.local}
-          - CC
-          - CCACHE_DIR=/auth_service/.ccache
-          - CCACHE_HASHDIR
-          - CCACHE_NOHASHDIR
-          - CCACHE_PREFIX
-          - CCACHE_SIZE
-          - CMAKE_OPTS
-          - CORES_DIR=/cores
-          - CXX
-          - MAKE_OPTS
-          - CMAKE_COMMON_FLAGS
-        volumes:
-          - .:/auth_service:rw
-          - ./third_party/userver/tools/docker:/tools:ro
-          - ${TC_CORES_DIR:-./.cores}:/cores:rw
-        ports:
-          - 8080:8080
-        working_dir: /auth_service
-        entrypoint:
-          - /tools/run_as_user.sh
-        depends_on:
-          - postgres
-          - redis
-        networks:
-          - postgres
-          - redis
+  redis-node-3:
+    image: redis:bookworm
+    ports:
+      - 7002
+    networks:
+      - redis
+    hostname: redis-node-3
+    volumes:
+      - ./redis:/redis
+    command: redis-server /redis/redis.conf --port 7002
+
+  redis-node-4:
+    image: redis:bookworm
+    ports:
+      - 7003
+    networks:
+      - redis
+    hostname: redis-node-4
+    volumes:
+      - ./redis:/redis
+    command: redis-server /redis/redis.conf --port 7003
+
+  redis-node-5:
+    image: redis:bookworm
+    ports:
+      - 7004
+    networks:
+      - redis
+    hostname: redis-node-5
+    volumes:
+      - ./redis:/redis
+    command: redis-server /redis/redis.conf --port 7004
+
+  redis-node-6:
+    image: redis:bookworm
+    ports:
+      - 7005
+    networks:
+      - redis
+    hostname: redis-node-6
+    volumes:
+      - ./redis:/redis
+    command: redis-server /redis/redis.conf --port 7005
+
+  redis-cluster-creator:
+    image: redis:bookworm
+    networks:
+      - redis
+    command: redis-cli -p 7000 --cluster create redis-node-1:7000 redis-node-2:7001 redis-node-3:7002 redis-node-4:7003 redis-node-5:7004 redis-node-6:7005 --cluster-replicas 1 --cluster-yes
+    depends_on:
+      - redis-node-1
+      - redis-node-2
+      - redis-node-3
+      - redis-node-4
+      - redis-node-5
+      - redis-node-6
+
+  postgres:
+    container_name: service-postgres
+    image: postgres:14
+    environment:
+      - POSTGRES_DB=auth_service_db_1
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+    ports:
+      - 5432
+    volumes:
+      - ./postgresql/schemas:/docker-entrypoint-initdb.d
+      - ./.pgdata:/var/lib/postgresql/data
+    networks:
+      - postgres
+
+  auth_service-container:
+    image: ghcr.io/userver-framework/ubuntu-userver-build-base:v2
+    privileged: true
+    environment:
+      - POSTGRES_DB=auth_service_db_1
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - PREFIX=${PREFIX:-~/.local}
+      - CC
+      - CCACHE_DIR=/auth_service/.ccache
+      - CCACHE_HASHDIR
+      - CCACHE_NOHASHDIR
+      - CCACHE_PREFIX
+      - CCACHE_SIZE
+      - CMAKE_OPTS
+      - CORES_DIR=/cores
+      - CXX
+      - MAKE_OPTS
+      - CMAKE_COMMON_FLAGS
+    volumes:
+      - .:/auth_service:rw
+      - ./third_party/userver/tools/docker:/tools:ro
+      - ${TC_CORES_DIR:-./.cores}:/cores:rw
+    ports:
+      - 8080:8080
+    working_dir: /auth_service
+    entrypoint:
+      - /tools/run_as_user.sh
+    depends_on:
+      - postgres
+      - redis-cluster-creator
+    networks:
+      - postgres
+      - redis
 
 networks:
-    postgres:
-        driver: bridge
-    redis:
-        driver: bridge
+  postgres:
+    driver: bridge
+  redis:
+    driver: bridge

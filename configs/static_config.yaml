@@ -72,5 +72,24 @@ components_manager:
             sync-start: false
             connlimit_mode: manual
 
+        redis-db-1:
+            groups:
+                - config_name: redis_db_1  # Key to lookup in secdist configuration
+                  db: redis_db_1           # Name to refer to the cluster in components::Redis::GetClient()
+                  sharding_strategy: RedisCluster
+
+            subscribe_groups:  # Array of redis clusters to work with in subscribe mode
+
+            thread_pools:
+                redis_thread_pool_size: 8
+                sentinel_thread_pool_size: 1
+
+        secdist: # Component that stores configuration of hosts and passwords
+            provider: default-secdist-provider
+        default-secdist-provider: # Component that loads configuration of hosts and passwords
+            config: /auth_service/configs/secure_data.json  # Values are supposed to be stored in this file
+            missing-ok: true                             # ... but if the file is missing it is still ok
+            environment-secrets-key: SECDIST_CONFIG      # ... values will be loaded from this environment value
+
         dns-client:
             fs-task-processor: fs-task-processor

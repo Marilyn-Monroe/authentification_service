@@ -7,6 +7,9 @@
 
 #include <userver/clients/dns/component.hpp>
 #include <userver/storages/postgres/component.hpp>
+#include <userver/storages/redis/component.hpp>
+#include <userver/storages/secdist/component.hpp>
+#include <userver/storages/secdist/provider_component.hpp>
 
 #include "hello.hpp"
 #include "signin.hpp"
@@ -20,7 +23,10 @@ int main(int argc, char* argv[]) {
           .Append<userver::components::HttpClient>()
           .Append<userver::server::handlers::TestsControl>()
           .Append<userver::clients::dns::Component>()
-          .Append<userver::components::Postgres>("postgres-db-1");
+          .Append<userver::components::Postgres>("postgres-db-1")
+          .Append<userver::components::Secdist>()
+          .Append<userver::components::DefaultSecdistProvider>()
+          .Append<userver::components::Redis>("redis-db-1");
 
   auth_service::AppendHello(component_list);
   auth_service::AppendSignUp(component_list);

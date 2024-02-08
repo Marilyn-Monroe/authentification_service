@@ -74,13 +74,13 @@ userver::formats::json::Value SignUp::HandleRequestJsonThrow(
         userver::server::handlers::ExternalBody{"Wrong 'password' argument"});
   }
 
-  auto selectResult =
+  auto select_result =
       pg_cluster_->Execute(userver::storages::postgres::ClusterHostType::kSlave,
                            "SELECT 1 FROM accounts "
                            "WHERE username = $1 OR email = $2",
                            username, email);
 
-  if (!selectResult.IsEmpty()) {
+  if (!select_result.IsEmpty()) {
     throw userver::server::handlers::ClientError(
         userver::server::handlers::ExternalBody{"Account already exists"});
   }
@@ -88,7 +88,7 @@ userver::formats::json::Value SignUp::HandleRequestJsonThrow(
   const auto salt = userver::utils::generators::GenerateUuid();
   const auto hash = PBKDF2_HMAC_SHA_512(password, salt);
 
-  auto insertResult = pg_cluster_->Execute(
+  auto insert_result = pg_cluster_->Execute(
       userver::storages::postgres::ClusterHostType::kMaster,
       "INSERT INTO accounts(username, email, pass_salt, pass_hash) "
       "VALUES($1, $2, $3, $4) "
@@ -97,7 +97,7 @@ userver::formats::json::Value SignUp::HandleRequestJsonThrow(
 
   userver::formats::json::ValueBuilder response(
       userver::formats::common::Type::kObject);
-  response["id"] = insertResult.AsSingleRow<int>();
+  response["id"] = insert_result.AsSingleRow<int>();
 
   request.SetResponseStatus(userver::server::http::HttpStatus::kCreated);
   return response.ExtractValue();
