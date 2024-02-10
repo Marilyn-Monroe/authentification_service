@@ -4,10 +4,7 @@
 
 #include <chrono>
 
-#include <fmt/format.h>
-
 #include <userver/components/component.hpp>
-#include <userver/logging/log.hpp>
 #include <userver/storages/postgres/component.hpp>
 #include <userver/storages/redis/component.hpp>
 #include <userver/utils/uuid4.hpp>

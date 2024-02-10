@@ -20,7 +20,7 @@ class SignIn final : public userver::server::handlers::HttpHandlerJsonBase {
   userver::formats::json::Value HandleRequestJsonThrow(
       const userver::server::http::HttpRequest& request,
       const userver::formats::json::Value& json,
-      userver::server::request::RequestContext&) const override final;
+      userver::server::request::RequestContext&) const final;
 
  private:
   userver::storages::postgres::ClusterPtr pg_cluster_;

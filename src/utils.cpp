@@ -15,8 +15,8 @@ std::string PBKDF2_HMAC_SHA_512(const std::string& password,
                     digest);
 
   std::string result;
-  for (size_t i = 0; i < sizeof(digest); i++) {
-    result.append(fmt::format("{:02x}", 255 & digest[i]));
+  for (unsigned char i : digest) {
+    result.append(fmt::format("{:02x}", 255 & i));
   }
 
   return result;
