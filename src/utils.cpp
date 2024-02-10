@@ -27,21 +27,21 @@ bool IsValidLength(const std::string& value, size_t min_len, size_t max_len) {
 }
 
 void ValidateUsername(const std::string& username) {
-  if (IsValidLength(username, 6, 32)) {
+  if (!IsValidLength(username, 6, 32)) {
     throw userver::server::handlers::ClientError(
         userver::server::handlers::ExternalBody{"Wrong 'username' argument"});
   }
 }
 
 void ValidateEmail(const std::string& email) {
-  if (IsValidLength(email, 6, 256)) {
+  if (!IsValidLength(email, 6, 256)) {
     throw userver::server::handlers::ClientError(
         userver::server::handlers::ExternalBody{"Wrong 'email' argument"});
   }
 }
 
 void ValidatePassword(const std::string& password) {
-  if (IsValidLength(password, 8, 256)) {
+  if (!IsValidLength(password, 8, 256)) {
     throw userver::server::handlers::ClientError(
         userver::server::handlers::ExternalBody{"Wrong 'password' argument"});
   }
