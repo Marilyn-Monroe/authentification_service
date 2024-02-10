@@ -11,7 +11,6 @@
 #include <userver/storages/secdist/component.hpp>
 #include <userver/storages/secdist/provider_component.hpp>
 
-#include "hello.hpp"
 #include "signin.hpp"
 #include "signup.hpp"
 
@@ -28,7 +27,6 @@ int main(int argc, char* argv[]) {
           .Append<userver::components::DefaultSecdistProvider>()
           .Append<userver::components::Redis>("redis-db-1");
 
-  auth_service::AppendHello(component_list);
   auth_service::AppendSignUp(component_list);
   auth_service::AppendSignIn(component_list);
 
