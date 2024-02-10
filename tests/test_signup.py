@@ -1,3 +1,5 @@
+import pytest
+from testsuite.databases import pgsql
 from testsuite.utils import matching
 
 
@@ -13,6 +15,40 @@ async def test_create_new_user(service_client):
     assert response.status == 201
     assert response.json() == {
         'id': matching.any_integer
+    }
+
+
+@pytest.mark.pgsql('db_1', files=['initial_data.sql'])
+async def test_create_existing_username(service_client):
+    response = await service_client.post(
+        '/v1/signup',
+        json={
+            'username': 'testuser',
+            'email': 'different@email.com',
+            'password': 'testpass'
+        },
+    )
+    assert response.status == 400
+    assert response.json() == {
+        'code': '400',
+        'message': matching.any_string
+    }
+
+
+@pytest.mark.pgsql('db_1', files=['initial_data.sql'])
+async def test_create_existing_email(service_client):
+    response = await service_client.post(
+        '/v1/signup',
+        json={
+            'username': 'differentuser',
+            'email': 'test@email.com',
+            'password': 'testpass'
+        },
+    )
+    assert response.status == 400
+    assert response.json() == {
+        'code': '400',
+        'message': matching.any_string
     }
 
 
