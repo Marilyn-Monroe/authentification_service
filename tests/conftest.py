@@ -37,9 +37,7 @@ def pgsql_local(service_source_dir, pgsql_local_create):
 
 
 @pytest.fixture(scope='session')
-def service_env(
-        _redis_service_settings: service.ServiceSettings,
-):
+def service_env():
     secdist_config = {
         'redis_settings': {
             'redis_db_1': {
