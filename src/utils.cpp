@@ -47,4 +47,11 @@ void ValidatePassword(const std::string& password) {
   }
 }
 
+void ValidateLogin(const std::string& login) {
+  if (!IsValidLength(login, 6, 256)) {
+    throw userver::server::handlers::ClientError(
+        userver::server::handlers::ExternalBody{"Wrong 'login' argument"});
+  }
+}
+
 }  // namespace auth_service

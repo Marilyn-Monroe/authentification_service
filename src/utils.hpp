@@ -38,5 +38,6 @@ bool IsValidLength(const std::string& value,
 void ValidateUsername(const std::string& username);
 void ValidateEmail(const std::string& email);
 void ValidatePassword(const std::string& password);
+void ValidateLogin(const std::string& login);
 
 }  // namespace auth_service

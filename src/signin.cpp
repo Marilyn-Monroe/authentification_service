@@ -29,39 +29,11 @@ userver::formats::json::Value SignIn::HandleRequestJsonThrow(
     const userver::server::http::HttpRequest& request,
     const userver::formats::json::Value& json,
     userver::server::request::RequestContext&) const {
-  if (!json.HasMember("login")) {
-    throw userver::server::handlers::ClientError(
-        userver::server::handlers::ExternalBody{"No 'login' argument"});
-  }
+  const auto& login = GetField<std::string>(json, "login");
+  ValidateLogin(login);
 
-  if (!json["login"].IsString()) {
-    throw userver::server::handlers::ClientError(
-        userver::server::handlers::ExternalBody{
-            "Invalid 'login' argument type"});
-  }
-
-  const auto& login = json["login"].As<std::string>();
-  if (login.length() < 6 || login.length() > 256) {
-    throw userver::server::handlers::ClientError(
-        userver::server::handlers::ExternalBody{"Wrong 'login' argument"});
-  }
-
-  if (!json.HasMember("password")) {
-    throw userver::server::handlers::ClientError(
-        userver::server::handlers::ExternalBody{"No 'password' argument"});
-  }
-
-  if (!json["password"].IsString()) {
-    throw userver::server::handlers::ClientError(
-        userver::server::handlers::ExternalBody{
-            "Invalid 'password' argument type"});
-  }
-
-  const auto& password = json["password"].As<std::string>();
-  if (password.length() < 8 || password.length() > 256) {
-    throw userver::server::handlers::ClientError(
-        userver::server::handlers::ExternalBody{"Wrong 'password' argument"});
-  }
+  const auto& password = GetField<std::string>(json, "password");
+  ValidatePassword(password);
 
   auto select_result = pg_cluster_->Execute(
       userver::storages::postgres::ClusterHostType::kSlave,

@@ -98,3 +98,20 @@ UTEST(ValidatePassword, Length) {
           "Vk5PzHVM2Zq2RyAKF6djdzpJQbFOHfKo0P2cCBvl58TbO9P2cCBvl58TbO9"),
       userver::server::handlers::ClientError);
 }
+
+UTEST(ValidateLogin, Length) {
+  using auth_service::ValidateLogin;
+
+  EXPECT_NO_THROW(ValidateLogin("correct_email@test.com"));
+  EXPECT_NO_THROW(ValidateLogin("correct_username"));
+  EXPECT_THROW(ValidateLogin("wrong"), userver::server::handlers::ClientError);
+  EXPECT_THROW(
+      ValidateLogin(
+          "contact-admin-hello-webmaster-info-services-peter-crazy-but-oh-so-"
+          "ubber-cool-english-alphabet-loverer-abcdefghijklmnopqrstuvwxyz@"
+          "please-try-to.send-me-an-email-if-you-can-possibly-begin-to-"
+          "remember-this-coz.this-is-the-longest-email-address-known-to-man-"
+          "but-to-be-honest.this-is-such-a-stupidly-long-sub-domain-it-could-"
+          "go-on-forever.pacraig.com"),
+      userver::server::handlers::ClientError);
+}
