@@ -84,7 +84,7 @@ services:
     container_name: service-postgres
     image: postgres:14
     environment:
-      - POSTGRES_DB=auth_service_db_1
+      - POSTGRES_DB=authentification_service_db_1
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
     ports:
@@ -95,16 +95,16 @@ services:
     networks:
       - postgres
 
-  auth_service-container:
+  authentification_service-container:
     image: ghcr.io/userver-framework/ubuntu-userver-build-base:v2
     privileged: true
     environment:
-      - POSTGRES_DB=auth_service_db_1
+      - POSTGRES_DB=authentification_service_db_1
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
       - PREFIX=${PREFIX:-~/.local}
       - CC
-      - CCACHE_DIR=/auth_service/.ccache
+      - CCACHE_DIR=/authentification_service/.ccache
       - CCACHE_HASHDIR
       - CCACHE_NOHASHDIR
       - CCACHE_PREFIX
@@ -115,12 +115,12 @@ services:
       - MAKE_OPTS
       - CMAKE_COMMON_FLAGS
     volumes:
-      - .:/auth_service:rw
+      - .:/authentification_service:rw
       - ./third_party/userver/tools/docker:/tools:ro
       - ${TC_CORES_DIR:-./.cores}:/cores:rw
     ports:
       - '8080:8080'
-    working_dir: /auth_service
+    working_dir: /authentification_service
     entrypoint:
       - /tools/run_as_user.sh
     depends_on:

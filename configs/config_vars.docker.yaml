@@ -6,6 +6,6 @@ is-testing: false
 
 server-port: 8080
 
-secdist-path: /etc/auth_service/secure_data.json
+secdist-path: /etc/authentification_service/secure_data.json
 
-dbconnection: 'postgresql://user:password@service-postgres:5432/auth_service_db_1'
+dbconnection: 'postgresql://user:password@service-postgres:5432/authentification_service_db_1'

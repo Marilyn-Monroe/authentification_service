@@ -5,7 +5,7 @@
 #include <userver/server/handlers/http_handler_json_base.hpp>
 #include <userver/storages/postgres/cluster.hpp>
 
-namespace auth_service {
+namespace authentification_service {
 
 namespace {
 
@@ -29,4 +29,4 @@ class SignUp final : public userver::server::handlers::HttpHandlerJsonBase {
 
 void AppendSignUp(userver::components::ComponentList& component_list);
 
-}  // namespace auth_service
+}  // namespace authentification_service

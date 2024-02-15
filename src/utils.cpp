@@ -2,7 +2,7 @@
 
 #include <openssl/evp.h>
 
-namespace auth_service {
+namespace authentification_service {
 
 std::string PBKDF2_HMAC_SHA_512(const std::string& password,
                                 const std::string& salt) {
@@ -54,4 +54,4 @@ void ValidateLogin(const std::string& login) {
   }
 }
 
-}  // namespace auth_service
+}  // namespace authentification_service

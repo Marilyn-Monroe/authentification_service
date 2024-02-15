@@ -9,7 +9,7 @@
 #include <userver/storages/redis/component.hpp>
 #include <userver/utils/uuid4.hpp>
 
-namespace auth_service {
+namespace authentification_service {
 
 namespace {
 
@@ -91,4 +91,4 @@ void AppendSignIn(userver::components::ComponentList& component_list) {
   component_list.Append<SignIn>();
 }
 
-}  // namespace auth_service
+}  // namespace authentification_service

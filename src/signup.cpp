@@ -5,7 +5,7 @@
 #include <userver/storages/postgres/component.hpp>
 #include <userver/utils/uuid4.hpp>
 
-namespace auth_service {
+namespace authentification_service {
 
 namespace {
 
@@ -65,4 +65,4 @@ void AppendSignUp(userver::components::ComponentList& component_list) {
   component_list.Append<SignUp>();
 }
 
-}  // namespace auth_service
+}  // namespace authentification_service

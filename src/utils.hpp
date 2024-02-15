@@ -8,7 +8,7 @@
 #include <userver/formats/json.hpp>
 #include <userver/server/handlers/exceptions.hpp>
 
-namespace auth_service {
+namespace authentification_service {
 
 std::string PBKDF2_HMAC_SHA_512(const std::string& password,
                                 const std::string& salt);
@@ -40,4 +40,4 @@ void ValidateEmail(const std::string& email);
 void ValidatePassword(const std::string& password);
 void ValidateLogin(const std::string& login);
 
-}  // namespace auth_service
+}  // namespace authentification_service

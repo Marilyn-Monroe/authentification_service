@@ -6,7 +6,7 @@
 #include <userver/storages/postgres/cluster.hpp>
 #include <userver/storages/redis/client.hpp>
 
-namespace auth_service {
+namespace authentification_service {
 
 namespace {
 
@@ -32,4 +32,4 @@ class SignIn final : public userver::server::handlers::HttpHandlerJsonBase {
 
 void AppendSignIn(userver::components::ComponentList& component_list);
 
-}  // namespace auth_service
+}  // namespace authentification_service

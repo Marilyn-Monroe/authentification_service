@@ -27,8 +27,8 @@ int main(int argc, char* argv[]) {
           .Append<userver::components::DefaultSecdistProvider>()
           .Append<userver::components::Redis>("redis-db-1");
 
-  auth_service::AppendSignUp(component_list);
-  auth_service::AppendSignIn(component_list);
+  authentification_service::AppendSignUp(component_list);
+  authentification_service::AppendSignIn(component_list);
 
   return userver::utils::DaemonMain(argc, argv, component_list);
 }

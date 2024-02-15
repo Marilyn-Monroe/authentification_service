@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(auth_service CXX)
+project(authentification_service CXX)
 
 # Enable userver libraries that are needed in this project
 set(USERVER_FEATURE_POSTGRESQL ON CACHE BOOL "" FORCE)

@@ -3,7 +3,7 @@
 #include <userver/utest/utest.hpp>
 
 UTEST(GetField, Base) {
-  using auth_service::GetField;
+  using authentification_service::GetField;
 
   userver::formats::json::ValueBuilder request_data(
       userver::formats::json::Type::kObject);
@@ -14,7 +14,7 @@ UTEST(GetField, Base) {
 }
 
 UTEST(GetField, FieldMissing) {
-  using auth_service::GetField;
+  using authentification_service::GetField;
 
   userver::formats::json::ValueBuilder request_data(
       userver::formats::json::Type::kObject);
@@ -24,7 +24,7 @@ UTEST(GetField, FieldMissing) {
 }
 
 UTEST(GetField, FieldTypeMismatch) {
-  using auth_service::GetField;
+  using authentification_service::GetField;
 
   userver::formats::json::ValueBuilder request_data(
       userver::formats::json::Type::kObject);
@@ -35,7 +35,7 @@ UTEST(GetField, FieldTypeMismatch) {
 }
 
 UTEST(IsValidLength, Base) {
-  using auth_service::IsValidLength;
+  using authentification_service::IsValidLength;
 
   EXPECT_EQ(IsValidLength("valid_str", 9, 9), true);
   EXPECT_EQ(IsValidLength("valid_str", 5, 15), true);
@@ -43,7 +43,7 @@ UTEST(IsValidLength, Base) {
 }
 
 UTEST(IsValidLength, Min) {
-  using auth_service::IsValidLength;
+  using authentification_service::IsValidLength;
 
   EXPECT_EQ(IsValidLength("test", 10, 30), false);
   EXPECT_EQ(IsValidLength("test", 0, 30), true);
@@ -51,7 +51,7 @@ UTEST(IsValidLength, Min) {
 }
 
 UTEST(IsValidLength, Max) {
-  using auth_service::IsValidLength;
+  using authentification_service::IsValidLength;
 
   EXPECT_EQ(IsValidLength("test_string", 0, 20), true);
   EXPECT_EQ(IsValidLength("test_string", 0, 0), false);
@@ -59,17 +59,17 @@ UTEST(IsValidLength, Max) {
 }
 
 UTEST(ValidateUsername, Length) {
-  using auth_service::ValidateUsername;
+  using authentification_service::ValidateUsername;
 
   EXPECT_NO_THROW(ValidateUsername("test_username"));
   EXPECT_THROW(ValidateUsername("user"),
                userver::server::handlers::ClientError);
-  EXPECT_THROW(ValidateUsername("auth_service_length_username_value"),
+  EXPECT_THROW(ValidateUsername("authentification_service_length_username_value"),
                userver::server::handlers::ClientError);
 }
 
 UTEST(ValidateEmail, Length) {
-  using auth_service::ValidateEmail;
+  using authentification_service::ValidateEmail;
 
   EXPECT_NO_THROW(ValidateEmail("correct_email@test.com"));
   EXPECT_THROW(ValidateEmail("wrong"), userver::server::handlers::ClientError);
@@ -85,7 +85,7 @@ UTEST(ValidateEmail, Length) {
 }
 
 UTEST(ValidatePassword, Length) {
-  using auth_service::ValidatePassword;
+  using authentification_service::ValidatePassword;
 
   EXPECT_NO_THROW(ValidatePassword("valid_password"));
   EXPECT_THROW(ValidatePassword("wrong"),
@@ -100,7 +100,7 @@ UTEST(ValidatePassword, Length) {
 }
 
 UTEST(ValidateLogin, Length) {
-  using auth_service::ValidateLogin;
+  using authentification_service::ValidateLogin;
 
   EXPECT_NO_THROW(ValidateLogin("correct_email@test.com"));
   EXPECT_NO_THROW(ValidateLogin("correct_username"));

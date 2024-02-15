@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace auth_service {
+namespace authentification_service {
 
 struct AccountDbInfo {
   int32_t id;
@@ -12,4 +12,4 @@ struct AccountDbInfo {
   std::string pass_hash;
 };
 
-}  // namespace auth_service
+}  // namespace authentification_service
