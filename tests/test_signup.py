@@ -1,5 +1,4 @@
 import pytest
-from testsuite.databases import pgsql
 from testsuite.utils import matching
 
 
@@ -14,7 +13,7 @@ async def test_create_new_user(service_client):
     )
     assert response.status == 201
     assert response.json() == matching.PartialDict({
-        'id': matching.any_integer
+        'id': matching.any_string
     })
 
 

@@ -1,12 +1,13 @@
 worker-threads: 4
 worker-fs-threads: 2
+worker-grpc-threads: 2
 logger-level: debug
 
 is-testing: true
 
 server-port: 8080
 
-secdist-path: /etc/authentification_service/secure_data.json
+sessions-management-endpoint: '[::1]:8081'
 
 # authentification_service_db_1 is the service name + _ + filename of the db_1.sql
 dbconnection: 'postgresql://testsuite@localhost:15433/authentification_service_db_1'

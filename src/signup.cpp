@@ -3,7 +3,7 @@
 
 #include <userver/components/component.hpp>
 #include <userver/storages/postgres/component.hpp>
-#include <userver/utils/uuid4.hpp>
+#include <userver/utils/boost_uuid4.hpp>
 
 namespace authentification_service {
 
@@ -41,7 +41,8 @@ userver::formats::json::Value SignUp::HandleRequestJsonThrow(
         userver::server::handlers::ExternalBody{"Account already exists"});
   }
 
-  const auto& salt = userver::utils::generators::GenerateUuid();
+  const auto& salt =
+      userver::utils::ToString(userver::utils::generators::GenerateBoostUuid());
   const auto& hash = PBKDF2_HMAC_SHA_512(password, salt);
 
   auto insert_result = pg_cluster_->Execute(
@@ -53,7 +54,8 @@ userver::formats::json::Value SignUp::HandleRequestJsonThrow(
 
   userver::formats::json::ValueBuilder response(
       userver::formats::common::Type::kObject);
-  response["id"] = insert_result.AsSingleRow<int>();
+  response["id"] =
+      userver::utils::ToString(insert_result.AsSingleRow<boost::uuids::uuid>());
 
   request.SetResponseStatus(userver::server::http::HttpStatus::kCreated);
   return response.ExtractValue();

@@ -1,10 +1,19 @@
 import pytest
-from testsuite.databases import pgsql
 from testsuite.utils import matching
 
+import handlers.sessions_management_pb2 as sessions_management_protos
 
+
+# Start via `make test-debug` or `make test-release`
 @pytest.mark.pgsql('db_1', files=['initial_data.sql'])
-async def test_login_username(service_client):
+async def test_login_username(service_client, mock_grpc_server):
+    @mock_grpc_server('CreateSession')
+    async def mock_create_session(request, context):
+        assert request.user_id
+        return sessions_management_protos.CreateSessionResponse(
+            session_id='018e422da09a721686716a384edc359f',
+        )
+
     response = await service_client.post(
         '/v1/signin',
         json={
@@ -25,7 +34,14 @@ async def test_login_username(service_client):
 
 
 @pytest.mark.pgsql('db_1', files=['initial_data.sql'])
-async def test_login_email(service_client):
+async def test_login_email(service_client, mock_grpc_server):
+    @mock_grpc_server('CreateSession')
+    async def mock_create_session(request, context):
+        assert request.user_id
+        return sessions_management_protos.CreateSessionResponse(
+            session_id='018e422da09a721686716a384edc359f',
+        )
+
     response = await service_client.post(
         '/v1/signin',
         json={

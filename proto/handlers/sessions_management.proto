@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package handlers.api;
+
+service SessionsManagementService {
+  rpc CreateSession (CreateSessionRequest) returns (CreateSessionResponse);
+  rpc DeleteSession (DeleteSessionRequest) returns (DeleteSessionResponse);
+  rpc CheckSession (CheckSessionRequest) returns (CheckSessionResponse);
+}
+
+message CreateSessionRequest {
+  string user_id = 1;
+}
+
+message CreateSessionResponse {
+  string session_id = 1;
+}
+
+message DeleteSessionRequest {
+  string session_id = 1;
+}
+
+message DeleteSessionResponse {
+  bool status = 1;
+}
+
+message CheckSessionRequest {
+  string session_id = 1;
+}
+
+message CheckSessionResponse {
+  bool status = 1;
+}

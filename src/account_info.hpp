@@ -1,11 +1,11 @@
 #pragma once
 
-#include <cstdint>
+#include <userver/utils/boost_uuid4.hpp>
 
 namespace authentification_service {
 
 struct AccountDbInfo {
-  int32_t id;
+  boost::uuids::uuid id;
   std::string username;
   std::string email;
   std::string pass_salt;

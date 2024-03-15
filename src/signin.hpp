@@ -1,10 +1,11 @@
 #pragma once
 
+#include "sessions_management_client.hpp"
+
 #include <userver/components/component_list.hpp>
 #include <userver/formats/json.hpp>
 #include <userver/server/handlers/http_handler_json_base.hpp>
 #include <userver/storages/postgres/cluster.hpp>
-#include <userver/storages/redis/client.hpp>
 
 namespace authentification_service {
 
@@ -24,8 +25,7 @@ class SignIn final : public userver::server::handlers::HttpHandlerJsonBase {
 
  private:
   userver::storages::postgres::ClusterPtr pg_cluster_;
-  userver::storages::redis::ClientPtr redis_client_;
-  userver::storages::redis::CommandControl redis_cc_;
+  SessionsManagementClient& client_;
 };
 
 }  // namespace

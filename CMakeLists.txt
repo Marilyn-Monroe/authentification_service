@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.12)
 project(authentification_service CXX)
 
 # Enable userver libraries that are needed in this project
+set(USERVER_FEATURE_GRPC ON CACHE BOOL "" FORCE)
 set(USERVER_FEATURE_POSTGRESQL ON CACHE BOOL "" FORCE)
-set(USERVER_FEATURE_REDIS ON CACHE BOOL "" FORCE)
 
 # Compatibility mode: some systems don't support these features
 set(USERVER_FEATURE_CRYPTOPP_BLAKE2 OFF CACHE BOOL "" FORCE)
@@ -24,8 +24,18 @@ add_library(${PROJECT_NAME}_objs OBJECT
         src/signin.cpp
         src/utils.hpp
         src/utils.cpp
+        src/sessions_management_client.cpp
+        src/sessions_management_client.hpp
 )
-target_link_libraries(${PROJECT_NAME}_objs PUBLIC userver-postgresql userver-redis)
+target_link_libraries(${PROJECT_NAME}_objs PUBLIC userver-postgresql)
+
+
+# Create a proto library with userver extensions
+include(GrpcTargets)
+userver_add_grpc_library(${PROJECT_NAME}_proto PROTOS
+        handlers/sessions_management.proto
+)
+target_link_libraries(${PROJECT_NAME}_objs PUBLIC ${PROJECT_NAME}_proto)
 
 
 # The Service

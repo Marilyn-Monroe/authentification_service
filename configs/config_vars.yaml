@@ -1,11 +1,12 @@
 worker-threads: 4
 worker-fs-threads: 2
+worker-grpc-threads: 2
 logger-level: debug
 
 is-testing: false
 
 server-port: 8080
 
-secdist-path: /etc/authentification_service/secure_data.json
+sessions-management-endpoint: '[::1]:8081'
 
 dbconnection: 'postgresql://authentification_service_user:password@localhost:5432/authentification_service_db_1'
