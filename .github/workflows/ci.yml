@@ -50,6 +50,22 @@ jobs:
                 ccache -M 2.0GB
                 ccache -s
 
+          - name: Pin the PostgreSQL version to 14
+            run: |
+                sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7FCC7D46ACCC4CF8
+                echo "deb https://apt-archive.postgresql.org/pub/repos/apt jammy-pgdg-archive main" | sudo tee /etc/apt/sources.list.d/pgdg.list
+                sudo apt update
+                
+                sudo mkdir -p /etc/apt/preferences.d
+  
+                printf "Package: postgresql-14\nPin: version 14.11*\nPin-Priority: 1001\n" | sudo tee -a /etc/apt/preferences.d/postgresql-14
+                printf "Package: postgresql-client-14\nPin: version 14.11*\nPin-Priority: 1001\n" | sudo tee -a /etc/apt/preferences.d/postgresql-client-14
+                sudo apt install --allow-downgrades -y postgresql-14 postgresql-client-14
+  
+                printf "Package: libpq5\nPin: version 14.11*\nPin-Priority: 1001\n" | sudo tee -a /etc/apt/preferences.d/libpq5
+                printf "Package: libpq-dev\nPin: version 14.11*\nPin-Priority: 1001\n"| sudo tee -a /etc/apt/preferences.d/libpq-dev
+                sudo apt install --allow-downgrades -y libpq5 libpq-dev
+
           - name: Run ${{matrix.make}}
             run: |
                 make ${{matrix.make}}
