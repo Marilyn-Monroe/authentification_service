@@ -17,7 +17,7 @@ services:
       - postgres
 
   authentification_service-container:
-    image: ghcr.io/userver-framework/ubuntu-userver-build-base:v2
+    image: ghcr.io/userver-framework/ubuntu-22.04-userver-base-ci:latest
     privileged: true
     environment:
       - POSTGRES_DB=authentification_service_db_1
